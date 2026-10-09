@@ -19,6 +19,34 @@ function App() {
 	});
 	const [locations, setLocations] = useState<LocationData[]>([]);
 
+	async function fetchLocation(userLat: number, userLng: number) {
+		const response = await fetch("http://localhost:8787", {
+			method: "POST",
+			headers: {
+				"Content-Type": "application/json",
+			},
+			body: JSON.stringify({
+				userLat,
+				userLng,
+			}),
+		});
+
+		const data = await response.json();
+
+		let locationList: LocationData[] = [];
+		console.log(data);
+		data.forEach((e: any) => {
+			locationList.push({
+				id: e.storeId,
+				name: e.name,
+				lat: e.latitude,
+				lng: e.longitude,
+				color: "#f54269",
+			});
+			setLocations(locationList);
+		});
+	}
+
 	useEffect(() => {
 		navigator.geolocation.getCurrentPosition(({ coords }) => {
 			mapRef.current?.getMap().jumpTo({
@@ -30,6 +58,8 @@ function App() {
 				longitude: coords.longitude,
 				latitude: coords.latitude,
 			});
+
+			fetchLocation(coords.latitude, coords.longitude);
 		});
 	}, []);
 
@@ -44,6 +74,10 @@ function App() {
 				<NavigationControl position="top-right" />
 
 				<Marker longitude={currentLocationMarker.longitude} latitude={currentLocationMarker.latitude} color="#4263f5" />
+
+				{locations.map((loc) => (
+					<Marker key={loc.id} longitude={loc.lng} latitude={loc.lat} color={loc.color || "#ff4757"} />
+				))}
 			</Map>
 		</main>
 	);

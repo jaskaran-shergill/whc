@@ -26,10 +26,12 @@ async def tm_fetch(userLat, userLng):
         menu = await get_store_menu(element["storeId"])
 
         # sift through all menu items and find the white chocolate one
-        for menuElement in menu["data"]["storeMenu"]:
-            if menuElement["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
-                if menuElement["isAvailable"] == True:
-                    validStoreList.append(element)
+        if menu["data"]["storeMenu"]:
+            for menuElement in menu["data"]["storeMenu"]:
+                if menuElement["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
+                    if menuElement["isAvailable"] == True:
+                        validStoreList.append(element)
+                        print("Found")
 
         await asyncio.sleep(0.1)
 
@@ -45,7 +47,7 @@ async def get_resturants(userLat, userLng):
                 "coordinates": {
                     "userLat": userLat,
                     "userLng": userLng,
-                    "searchRadius": 1000,
+                    "searchRadius": 8000,
                 },
                 "first": 20,
                 "status": "OPEN",
