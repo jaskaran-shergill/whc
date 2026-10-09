@@ -1,0 +1,66 @@
+# Rules formerly in web/.gitignore
+web/**/logs
+web/**/*.log
+web/**/npm-debug.log*
+web/**/yarn-debug.log*
+web/**/yarn-error.log*
+web/**/pnpm-debug.log*
+web/**/lerna-debug.log*
+web/**/node_modules
+web/**/dist
+web/**/dist-ssr
+web/**/*.local
+web/.vscode/*
+!web/.vscode/extensions.json
+web/**/.idea
+web/**/.DS_Store
+web/**/*.suo
+web/**/*.ntvs*
+web/**/*.njsproj
+web/**/*.sln
+web/**/*.sw?
+web/**/.wrangler
+web/**/.dev.vars*
+!web/**/.dev.vars.example
+web/**/.env*
+!web/**/.env.example
+
+# Rules formerly in api/.gitignore
+api/**/logs
+api/**/_.log
+api/**/npm-debug.log_
+api/**/yarn-debug.log*
+api/**/yarn-error.log*
+api/**/lerna-debug.log*
+api/**/.pnpm-debug.log*
+api/**/report.[0-9]_.[0-9]_.[0-9]_.[0-9]_.json
+api/**/pids
+api/**/_.pid
+api/**/_.seed
+api/**/\*.pid.lock
+api/**/node_modules/
+api/**/jspm_packages/
+api/**/\*.tsbuildinfo
+api/**/.npm
+api/**/.eslintcache
+api/**/.stylelintcache
+api/**/.node_repl_history
+api/**/\*.tgz
+api/**/.vscode-test
+api/**/.dev.vars*
+!api/**/.dev.vars.example
+api/**/.env*
+!api/**/.env.example
+api/**/.wrangler/
+api/**/python_modules/
+api/**/.venv/
+api/**/.venv-workers/
+
+# Rules formerly in api/.venv-workers/.gitignore
+api/.venv-workers/*
+
+# Rules formerly in api/.venv-workers/pyodide-venv/.gitignore
+api/.venv-workers/pyodide-venv/*
+
+# Rules formerly in api/.venv/.gitignore
+api/.venv/*
