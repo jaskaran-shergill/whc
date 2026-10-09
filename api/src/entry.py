@@ -4,4 +4,10 @@ from functions.fetch import tm_fetch
 
 class Default(WorkerEntrypoint):
     async def fetch(self, request):
-        return Response.json(await tm_fetch())
+        coords = await request.json()
+        return Response.json(
+            await tm_fetch(
+                float(coords["userLat"]),
+                float(coords["userLng"]),
+            )
+        )

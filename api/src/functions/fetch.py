@@ -4,9 +4,9 @@ import json
 import asyncio
 
 
-async def tm_fetch():
+async def tm_fetch(userLat, userLng):
     print("Fetching data...")
-    restaurants = await get_resturants()
+    restaurants = await get_resturants(userLat, userLng)
     # menu = await get_store_menu(
     #     restaurants["data"]["restaurants"]["nodes"][0]["storeId"]
     # )
@@ -36,15 +36,15 @@ async def tm_fetch():
     return validStoreList
 
 
-async def get_resturants():
+async def get_resturants(userLat, userLng):
     payload = {
         "operationName": "GetRestaurants",
         "variables": {
             "input": {
                 "filter": "NEARBY",
                 "coordinates": {
-                    "userLat": 43.66,
-                    "userLng": -79.39,
+                    "userLat": userLat,
+                    "userLng": userLng,
                     "searchRadius": 1000,
                 },
                 "first": 20,
