@@ -1,5 +1,6 @@
 import Map, { type MapRef, Marker, NavigationControl, Popup } from "react-map-gl/maplibre";
 import "maplibre-gl/dist/maplibre-gl.css";
+import mapStyleUrl from "./assets/map.json?url";
 import { useEffect, useRef, useState } from "react";
 
 interface LocationData {
@@ -113,12 +114,7 @@ function App() {
 
 	return (
 		<main className="h-screen w-full">
-			<Map
-				initialViewState={{ longitude: -122.4, latitude: 37.8, zoom: 14 }}
-				ref={mapRef}
-				style={{ width: "100%", height: "100%" }}
-				mapStyle="https://openmaptiles.geo.data.gouv.fr/styles/osm-bright/style.json"
-			>
+			<Map initialViewState={{ longitude: -122.4, latitude: 37.8, zoom: 14 }} ref={mapRef} style={{ width: "100%", height: "100%" }} mapStyle={mapStyleUrl}>
 				<NavigationControl position="top-right" />
 
 				<Marker longitude={currentLocationMarker.longitude} latitude={currentLocationMarker.latitude} color="#4263f5" />
