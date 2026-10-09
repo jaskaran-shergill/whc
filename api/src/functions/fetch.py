@@ -20,20 +20,22 @@ async def tm_fetch(userLat, userLng):
     # return "blank"
 
     validStoreList = list()
+    print(restaurants)
 
     # loop all restaurants
-    for element in restaurants["data"]["restaurants"]["nodes"]:
-        menu = await get_store_menu(element["storeId"])
+    if restaurants:
+        for element in restaurants["data"]["restaurants"]["nodes"]:
+            menu = await get_store_menu(element["storeId"])
 
-        # sift through all menu items and find the white chocolate one
-        if menu["data"]["storeMenu"]:
-            for menuElement in menu["data"]["storeMenu"]:
-                if menuElement["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
-                    if menuElement["isAvailable"] == True:
-                        validStoreList.append(element)
-                        print("Found")
+            # sift through all menu items and find the white chocolate one
+            if menu["data"]["storeMenu"]:
+                for menuElement in menu["data"]["storeMenu"]:
+                    if menuElement["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
+                        if menuElement["isAvailable"] == True:
+                            validStoreList.append(element)
+                            print("Found")
 
-        await asyncio.sleep(0.1)
+            await asyncio.sleep(0.025)
 
     return validStoreList
 
@@ -156,35 +158,7 @@ fragment RestaurantNodeFragment on RestaurantNode {
   restaurantImage {
     asset {
       _id
-      metadata {
-        lqip
-        palette {
-          dominant {
-            background
-            foreground
-            __typename
-          }
-          __typename
-        }
-        __typename
-      }
-      __typename
     }
-    crop {
-      top
-      bottom
-      left
-      right
-      __typename
-    }
-    hotspot {
-      height
-      width
-      x
-      y
-      __typename
-    }
-    __typename
   }
   restaurantPosData {
     _id
