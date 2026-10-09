@@ -19,23 +19,28 @@ async def tm_fetch(userLat, userLng):
 
     # return "blank"
 
+    restaurant_data = restaurants.get("data") if isinstance(restaurants, dict) else None
+    restaurants_data = restaurant_data.get("restaurants") if isinstance(restaurant_data, dict) else None
+    restaurant_nodes = restaurants_data.get("nodes") if isinstance(restaurants_data, dict) else None
+    if not isinstance(restaurant_nodes, list):
+        details = restaurants.get("errors", restaurants) if isinstance(restaurants, dict) else restaurants
+        raise ValueError(f"Restaurant GraphQL request failed: {json.dumps(details)}")
+
     validStoreList = list()
-    print(restaurants)
 
     # loop all restaurants
-    if restaurants:
-        for element in restaurants["data"]["restaurants"]["nodes"]:
-            menu = await get_store_menu(element["storeId"])
+    for element in restaurant_nodes:
+        menu = await get_store_menu(element["storeId"])
 
-            # sift through all menu items and find the white chocolate one
-            if menu["data"]["storeMenu"]:
-                for menuElement in menu["data"]["storeMenu"]:
-                    if menuElement["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
-                        if menuElement["isAvailable"] == True:
-                            validStoreList.append(element)
-                            print("Found")
+        # sift through all menu items and find the white chocolate one
+        if menu["data"]["storeMenu"]:
+            for menuElement in menu["data"]["storeMenu"]:
+                if menuElement["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
+                    if menuElement["isAvailable"] == True:
+                        validStoreList.append(element)
+                        print("Found")
 
-            await asyncio.sleep(0.025)
+        await asyncio.sleep(0.025)
 
     return validStoreList
 
@@ -59,7 +64,6 @@ async def get_resturants(userLat, userLng):
 query GetRestaurants($input: RestaurantsInput) {
   restaurants(input: $input) {
     nodes {
-<<<<<<< HEAD
       storeId
       name
       latitude
@@ -80,101 +84,6 @@ query GetRestaurants($input: RestaurantsInput) {
           _id
         }
       }
-=======
-      ...RestaurantNodeFragment
-      __typename
-    }
-    __typename
-  }
-}
-
-fragment RestaurantNodeFragment on RestaurantNode {
-  _id
-  storeId
-  isAvailable
-  posVendor
-  chaseMerchantId
-  cateringHours {
-    ...OperatingHoursFragment
-    ...OperatingHoursFragment
-    __typename
-  }
-  curbsideHours {
-    ...OperatingHoursFragment
-    __typename
-  }
-  cateringHours {
-    ...OperatingHoursFragment
-    __typename
-  }
-  timezone
-  deliveryHours {
-    ...OperatingHoursFragment
-    __typename
-  }
-  diningRoomHours {
-    ...OperatingHoursFragment
-    __typename
-  }
-  distanceInMiles
-  drinkStationType
-  driveThruHours {
-    ...OperatingHoursFragment
-    __typename
-  }
-  driveThruLaneType
-  email
-  environment
-  franchiseGroupId
-  franchiseGroupName
-  frontCounterClosed
-  hasBreakfast
-  hasBurgersForBreakfast
-  hasCatering
-  hasCurbside
-  hasDelivery
-  hasDineIn
-  hasDriveThru
-  hasTableService
-  hasMobileOrdering
-  hasLateNightMenu
-  hasParking
-  hasPlayground
-  hasTakeOut
-  hasWifi
-  hasLoyalty
-  id
-  isDarkKitchen
-  isFavorite
-  isHalal
-  isRecent
-  latitude
-  longitude
-  mobileOrderingStatus
-  name
-  number
-  parkingType
-  phoneNumber
-  physicalAddress {
-    address1
-    address2
-    city
-    country
-    postalCode
-    stateProvince
-    stateProvinceShort
-    __typename
-  }
-  playgroundType
-  pos {
-    vendor
-    __typename
-  }
-  posRestaurantId
-  restaurantImage {
-    asset {
-      _id
->>>>>>> 364253cd484d26ddc384f30692a25f8d1ff29b75
     }
   }
 }
