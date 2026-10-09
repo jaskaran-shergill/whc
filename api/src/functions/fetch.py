@@ -1,22 +1,39 @@
 from workers import Response, fetch
 from urllib.parse import urlencode
 import json
+import asyncio
 
 
 async def tm_fetch():
     print("Fetching data...")
     restaurants = await get_resturants()
-    menu = await get_store_menu(
-        restaurants["data"]["restaurants"]["nodes"][0]["storeId"]
-    )
+    # menu = await get_store_menu(
+    #     restaurants["data"]["restaurants"]["nodes"][0]["storeId"]
+    # )
 
-    # find if white hot chooclate is available in the menu
+    # # find if white hot chooclate is available in the menu
 
-    for element in menu["data"]["storeMenu"]:
-        if element["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
-            print(element["isAvailable"])
+    # for element in menu["data"]["storeMenu"]:
+    #     if element["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
+    #         print(element["isAvailable"])
 
-    return "blank"
+    # return "blank"
+
+    validStoreList = list()
+
+    # loop all restaurants
+    for element in restaurants["data"]["restaurants"]["nodes"]:
+        menu = await get_store_menu(element["storeId"])
+
+        # sift through all menu items and find the white chocolate one
+        for menuElement in menu["data"]["storeMenu"]:
+            if menuElement["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
+                if menuElement["isAvailable"] == True:
+                    validStoreList.append(element)
+
+        await asyncio.sleep(0.1)
+
+    return validStoreList
 
 
 async def get_resturants():
