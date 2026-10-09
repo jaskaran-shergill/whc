@@ -1,1 +1,7 @@
 @import "tailwindcss";
+
+.restaurant-popup .maplibregl-popup-content {
+	padding: 0;
+	overflow: hidden;
+	border-radius: 8px;
+}
