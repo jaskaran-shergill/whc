@@ -2,6 +2,7 @@ import Map, { type MapRef, Marker, NavigationControl } from "react-map-gl/maplib
 import "maplibre-gl/dist/maplibre-gl.css";
 import mapStyleUrl from "./assets/map.json?url";
 import MarkerPopup, { type LocationData } from "./components/MarkerPopup";
+import StoreList, { type Coordinates } from "./components/StoreList";
 import { useEffect, useRef, useState } from "react";
 
 function getRestaurantImageUrl(assetId?: string): string | undefined {
@@ -15,10 +16,7 @@ function getRestaurantImageUrl(assetId?: string): string | undefined {
 function App() {
 	const mapRef = useRef<MapRef>(null);
 
-	const [currentLocationMarker, setCurrentLocationMarker] = useState({
-		longitude: 0,
-		latitude: 0,
-	});
+	const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
 	const [locations, setLocations] = useState<LocationData[]>([]);
 	const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(null);
 
@@ -58,10 +56,7 @@ function App() {
 				zoom: 15,
 			});
 
-			setCurrentLocationMarker({
-				longitude: coords.longitude,
-				latitude: coords.latitude,
-			});
+			setUserLocation({ latitude: coords.latitude, longitude: coords.longitude });
 
 			fetchLocation(coords.latitude, coords.longitude);
 		});
@@ -71,7 +66,7 @@ function App() {
 			<Map initialViewState={{ longitude: -79.3871, latitude: 43.6426, zoom: 14 }} ref={mapRef} style={{ width: "100%", height: "100%" }} mapStyle={mapStyleUrl}>
 				<NavigationControl position="top-right" />
 
-				<Marker longitude={currentLocationMarker.longitude} latitude={currentLocationMarker.latitude} color="#4263f5" />
+				{userLocation && <Marker longitude={userLocation.longitude} latitude={userLocation.latitude} color="#4263f5" />}
 
 				{locations.map((loc) => (
 					<Marker
@@ -88,6 +83,15 @@ function App() {
 
 				{selectedLocation && <MarkerPopup location={selectedLocation} onClose={() => setSelectedLocation(null)} />}
 			</Map>
+			<StoreList
+				stores={locations}
+				userLocation={userLocation}
+				selectedStoreId={selectedLocation?.id ?? null}
+				onSelect={(location) => {
+					setSelectedLocation(location);
+					mapRef.current?.flyTo({ center: [location.lng, location.lat], zoom: 15, duration: 600 });
+				}}
+			/>
 		</main>
 	);
 }
