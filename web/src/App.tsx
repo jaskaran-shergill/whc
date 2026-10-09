@@ -114,7 +114,7 @@ function App() {
 
 	return (
 		<main className="h-screen w-full">
-			<Map initialViewState={{ longitude: -122.4, latitude: 37.8, zoom: 14 }} ref={mapRef} style={{ width: "100%", height: "100%" }} mapStyle={mapStyleUrl}>
+			<Map initialViewState={{ longitude: -79.3871, latitude: 43.6426, zoom: 14 }} ref={mapRef} style={{ width: "100%", height: "100%" }} mapStyle={mapStyleUrl}>
 				<NavigationControl position="top-right" />
 
 				<Marker longitude={currentLocationMarker.longitude} latitude={currentLocationMarker.latitude} color="#4263f5" />
