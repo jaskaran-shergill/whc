@@ -20,10 +20,20 @@ async def tm_fetch(userLat, userLng):
     # return "blank"
 
     restaurant_data = restaurants.get("data") if isinstance(restaurants, dict) else None
-    restaurants_data = restaurant_data.get("restaurants") if isinstance(restaurant_data, dict) else None
-    restaurant_nodes = restaurants_data.get("nodes") if isinstance(restaurants_data, dict) else None
+    restaurants_data = (
+        restaurant_data.get("restaurants")
+        if isinstance(restaurant_data, dict)
+        else None
+    )
+    restaurant_nodes = (
+        restaurants_data.get("nodes") if isinstance(restaurants_data, dict) else None
+    )
     if not isinstance(restaurant_nodes, list):
-        details = restaurants.get("errors", restaurants) if isinstance(restaurants, dict) else restaurants
+        details = (
+            restaurants.get("errors", restaurants)
+            if isinstance(restaurants, dict)
+            else restaurants
+        )
         raise ValueError(f"Restaurant GraphQL request failed: {json.dumps(details)}")
 
     validStoreList = list()
@@ -40,7 +50,7 @@ async def tm_fetch(userLat, userLng):
                         validStoreList.append(element)
                         print("Found")
 
-        await asyncio.sleep(0.025)
+        await asyncio.sleep(0.02)
 
     return validStoreList
 
