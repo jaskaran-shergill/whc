@@ -1,10 +1,22 @@
 from workers import Response, fetch
+from urllib.parse import urlencode
 import json
 
 
 async def tm_fetch():
     print("Fetching data...")
-    return await get_resturants()
+    restaurants = await get_resturants()
+    menu = await get_store_menu(
+        restaurants["data"]["restaurants"]["nodes"][0]["storeId"]
+    )
+
+    # find if white hot chooclate is available in the menu
+
+    for element in menu["data"]["storeMenu"]:
+        if element["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
+            print(element["isAvailable"])
+
+    return "blank"
 
 
 async def get_resturants():
@@ -193,4 +205,38 @@ fragment OperatingHoursFragment on OperatingHours {
 
     result = await Response.json(response)
 
+    return result
+
+
+async def get_store_menu(store_id):
+    payload = {
+        "operationName": "storeMenu",
+        "variables": json.dumps(
+            {
+                "channel": "whitelabel",
+                "region": "CA",
+                "storeId": store_id,
+                "serviceMode": "pickup",
+            }
+        ),
+        "extensions": json.dumps(
+            {
+                "persistedQuery": {
+                    "version": 1,
+                    "sha256Hash": "713eb1f46bf8b3ba1a867c65d0e0fd2a879cf0e2d1d3e9788addda059e617cc0",
+                }
+            }
+        ),
+    }
+
+    response = await fetch(
+        "https://use1-prod-th-gateway.rbictg.com/graphql?operationName="
+        + payload["operationName"]
+        + "&variables="
+        + payload["variables"]
+        + "&extensions="
+        + payload["extensions"]
+    )
+
+    result = await Response.json(response)
     return result
