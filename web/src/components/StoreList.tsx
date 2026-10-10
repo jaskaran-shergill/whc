@@ -158,13 +158,15 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 					{isCollapsed ? <AltArrowUpIcon size={18} aria-hidden="true" /> : <AltArrowDownIcon size={18} aria-hidden="true" />}
 				</button>
 			</div>
+			<div className={`store-list-panel ${isCollapsed ? "is-collapsed" : ""}`} aria-hidden={isCollapsed}>
+				<div className="store-list-panel-content">
 			{storeLoadError && (
 				<p role="status" className="border-t border-slate-200 px-4 py-3 text-sm text-slate-600">
 					{storeLoadError}
 				</p>
 			)}
 
-			{!isCollapsed && query.trim() && (
+			{query.trim() && (
 				<div className="border-t border-slate-200">
 					{isSearching ? (
 						<StoreSkeletonRows showImages={false} />
@@ -187,9 +189,9 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 				</div>
 			)}
 
-			{!isCollapsed && !query.trim() && isLoadingStores && !storeLoadError && <StoreSkeletonRows />}
+			{!query.trim() && isLoadingStores && !storeLoadError && <StoreSkeletonRows />}
 
-			{!isCollapsed && !query.trim() && !isLoadingStores && !storeLoadError && (
+			{!query.trim() && !isLoadingStores && !storeLoadError && (
 				<ul className="store-list-scroll max-h-[30dvh] divide-y divide-slate-100 overflow-y-auto overscroll-contain">
 					{sortedStores.map((store) => {
 						const distance = userLocation ? getDistanceInKm(userLocation, store) : null;
@@ -214,6 +216,8 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 					})}
 				</ul>
 			)}
+				</div>
+			</div>
 		</section>
 	);
 }
