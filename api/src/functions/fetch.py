@@ -49,7 +49,6 @@ async def tm_fetch(userLat, userLng):
                 if menuElement["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
                     if menuElement["isAvailable"] == True:
                         validStoreList.append(element)
-                        print("Found")
 
     return validStoreList
 
