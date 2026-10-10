@@ -37,6 +37,12 @@ body {
 	width: 6px;
 }
 
+.store-list-scroll::-webkit-scrollbar-button {
+	display: none;
+	width: 0;
+	height: 0;
+}
+
 .store-list-scroll::-webkit-scrollbar-track {
 	background: transparent;
 }
