@@ -10,6 +10,7 @@ body,
 
 body {
 	overscroll-behavior: none;
+	font-family: "Manrope", sans-serif;
 }
 
 .map-screen {
