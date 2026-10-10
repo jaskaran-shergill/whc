@@ -35,6 +35,23 @@ function formatDistance(distance: number): string {
 	return distance < 1 ? `${Math.round(distance * 1000)} m` : `${distance.toFixed(1)} km`;
 }
 
+function StoreSkeletonRows({ showImages = true }: { showImages?: boolean }) {
+	return (
+		<ul className="store-list-scroll max-h-[30dvh] divide-y divide-slate-100 overflow-y-auto overscroll-contain" role="status" aria-label="Loading nearby stores">
+			{Array.from({ length: 4 }, (_, index) => (
+				<li key={index} aria-hidden="true" className="flex min-h-12 animate-pulse items-center gap-3 px-4 py-2">
+					{showImages && <span className="h-10 w-14 shrink-0 rounded bg-slate-200" />}
+					<span className="min-w-0 flex-1 space-y-2">
+						<span className="block h-3 w-4/5 rounded bg-slate-200" />
+						<span className="block h-3 w-3/5 rounded bg-slate-200" />
+					</span>
+					{showImages && <span className="h-3 w-8 shrink-0 rounded bg-slate-200" />}
+				</li>
+			))}
+		</ul>
+	);
+}
+
 function getPlaceLabel(properties: Record<string, string | undefined>): string {
 	const locality = properties.city ?? properties.town ?? properties.village ?? properties.county;
 	return [properties.name, properties.street, locality, properties.state, properties.country].filter(Boolean).filter((part, index, all) => all.indexOf(part) === index).join(", ");
@@ -141,15 +158,17 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 					{isCollapsed ? <AltArrowUpIcon size={18} aria-hidden="true" /> : <AltArrowDownIcon size={18} aria-hidden="true" />}
 				</button>
 			</div>
-			{(isLoadingStores || storeLoadError) && (
+			{storeLoadError && (
 				<p role="status" className="border-t border-slate-200 px-4 py-3 text-sm text-slate-600">
-					{isLoadingStores ? "Loading nearby stores…" : storeLoadError}
+					{storeLoadError}
 				</p>
 			)}
 
 			{!isCollapsed && query.trim() && (
 				<div className="border-t border-slate-200">
-					{suggestions.length > 0 ? (
+					{isSearching ? (
+						<StoreSkeletonRows showImages={false} />
+					) : suggestions.length > 0 ? (
 						<ul className="store-list-scroll max-h-[30dvh] divide-y divide-slate-100 overflow-y-auto overscroll-contain" role="listbox">
 							{suggestions.map((place) => (
 								<li key={`${place.latitude},${place.longitude}`}>
@@ -168,7 +187,9 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 				</div>
 			)}
 
-			{!isCollapsed && !query.trim() && (
+			{!isCollapsed && !query.trim() && isLoadingStores && !storeLoadError && <StoreSkeletonRows />}
+
+			{!isCollapsed && !query.trim() && !isLoadingStores && !storeLoadError && (
 				<ul className="store-list-scroll max-h-[30dvh] divide-y divide-slate-100 overflow-y-auto overscroll-contain">
 					{sortedStores.map((store) => {
 						const distance = userLocation ? getDistanceInKm(userLocation, store) : null;
@@ -184,7 +205,7 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 									aria-pressed={isSelected}
 									className={`flex min-h-12 w-full items-center gap-3 px-4 py-2 text-left ${isSelected ? "bg-slate-50" : "bg-white"}`}
 								>
-									{store.imageUrl && <img src={store.imageUrl} alt="" loading="lazy" className="h-10 w-14 shrink-0 rounded object-cover" />}
+									{store.imageUrl ? <img src={store.imageUrl} alt="" loading="lazy" className="h-10 w-14 shrink-0 rounded object-cover" /> : <span aria-hidden="true" className="h-10 w-14 shrink-0 animate-pulse rounded bg-slate-200" />}
 									<span className="min-w-0 flex-1 text-sm leading-snug text-slate-900">{store.name}</span>
 									<span className="shrink-0 text-xs text-slate-500">{distance === null ? "" : formatDistance(distance)}</span>
 								</button>
