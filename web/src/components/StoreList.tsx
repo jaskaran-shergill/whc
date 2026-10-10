@@ -117,7 +117,7 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 					aria-autocomplete="list"
 					aria-expanded={suggestions.length > 0}
 					placeholder="Search a city or address"
-					className="h-9 w-full rounded-full border border-slate-300 bg-white pl-10 pr-4 text-base text-slate-900 outline-none"
+					className="h-9 w-full rounded-full bg-slate-100 pl-10 pr-4 text-base text-slate-900 outline-none placeholder:text-slate-500"
 					onKeyDown={(event) => {
 						if (event.key === "Enter" && suggestions[0]) {
 							event.preventDefault();
@@ -136,9 +136,9 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 					aria-label={isCollapsed ? "Show nearby stores" : "Hide nearby stores"}
 					aria-expanded={!isCollapsed}
 					onClick={() => setIsCollapsed((collapsed) => !collapsed)}
-				className="grid h-9 w-9 shrink-0 place-items-center rounded-full text-blue-700 transition-colors hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+					className="grid h-8 w-8 shrink-0 place-items-center rounded-full text-slate-600 transition-colors hover:bg-slate-100 hover:text-slate-900 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500"
 				>
-					{isCollapsed ? <AltArrowUpIcon size={20} aria-hidden="true" /> : <AltArrowDownIcon size={20} aria-hidden="true" />}
+					{isCollapsed ? <AltArrowUpIcon size={18} aria-hidden="true" /> : <AltArrowDownIcon size={18} aria-hidden="true" />}
 				</button>
 			</div>
 			{(isLoadingStores || storeLoadError) && (
