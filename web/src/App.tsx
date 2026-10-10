@@ -62,7 +62,7 @@ function App() {
 		});
 	}, []);
 	return (
-		<main className="h-screen h-dvh w-full overflow-hidden">
+		<main className="map-screen">
 			<Map initialViewState={{ longitude: -79.3871, latitude: 43.6426, zoom: 14 }} ref={mapRef} style={{ width: "100%", height: "100%" }} mapStyle={mapStyleUrl}>
 				<NavigationControl position="top-right" />
 
