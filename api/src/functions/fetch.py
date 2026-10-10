@@ -50,7 +50,7 @@ async def tm_fetch(userLat, userLng):
                         validStoreList.append(element)
                         print("Found")
 
-        await asyncio.sleep(0.02)
+        # await asyncio.sleep(0.02)
 
     return validStoreList
 
