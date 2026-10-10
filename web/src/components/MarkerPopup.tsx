@@ -70,9 +70,9 @@ export default function MarkerPopup({ location, onClose }: MarkerPopupProps) {
 					type="button"
 					aria-label="Close restaurant details"
 					onClick={onClose}
-					className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-white/95 text-slate-700 shadow-sm ring-1 ring-black/10 transition-colors hover:bg-white hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
+					className="absolute right-2 top-2 grid h-7 w-7 place-items-center rounded-full bg-white/90 text-slate-500 shadow-sm transition-colors hover:bg-white hover:text-slate-800 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-slate-500"
 				>
-					<CloseIcon size={16} aria-hidden="true" />
+					<CloseIcon size={14} strokeWidth={1} color="#64748b" aria-hidden="true" />
 				</button>
 				{location.imageUrl && <img src={location.imageUrl} alt="" className="block h-32 w-full object-cover" />}
 				<div className="space-y-2 p-3">
