@@ -1,4 +1,5 @@
 import { Popup } from "react-map-gl/maplibre";
+import { CloseIcon } from "@solar-icons/react/linear/close";
 
 export interface LocationData {
 	id: string | number;
@@ -69,9 +70,9 @@ export default function MarkerPopup({ location, onClose }: MarkerPopupProps) {
 					type="button"
 					aria-label="Close restaurant details"
 					onClick={onClose}
-					className="absolute right-2 top-2 grid h-11 w-11 place-items-center rounded-md bg-white text-base leading-none text-slate-900 shadow-sm"
+					className="absolute right-2 top-2 grid h-8 w-8 place-items-center rounded-full bg-white/95 text-slate-700 shadow-sm ring-1 ring-black/10 transition-colors hover:bg-white hover:text-slate-950 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
 				>
-					×
+					<CloseIcon size={16} aria-hidden="true" />
 				</button>
 				{location.imageUrl && <img src={location.imageUrl} alt="" className="block h-32 w-full object-cover" />}
 				<div className="space-y-2 p-3">
