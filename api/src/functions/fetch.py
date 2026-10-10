@@ -65,7 +65,7 @@ async def get_resturants(userLat, userLng):
                     "userLng": userLng,
                     "searchRadius": 15000,
                 },
-                "first": 40,
+                "first": 20,
                 "status": "OPEN",
             }
         },
