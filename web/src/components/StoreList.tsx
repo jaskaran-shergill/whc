@@ -99,8 +99,7 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 	return (
 		<section
 			aria-label="Search places and browse nearby stores"
-			className="absolute left-1/2 z-10 w-[calc(100%-1.5rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
-			style={{ bottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
+			className="absolute bottom-3 left-1/2 z-10 w-[calc(100%-1.5rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
 		>
 			<div className="flex items-center gap-2 p-2">
 				<div className="relative min-w-0 flex-1">
