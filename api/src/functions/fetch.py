@@ -39,18 +39,17 @@ async def tm_fetch(userLat, userLng):
     validStoreList = list()
 
     # loop all restaurants
-    for element in restaurant_nodes:
-        menu = await get_store_menu(element["storeId"])
+    menus = await asyncio.gather(
+        *[get_store_menu(element["storeId"]) for element in restaurant_nodes]
+    )
 
-        # sift through all menu items and find the white chocolate one
+    for element, menu in zip(restaurant_nodes, menus):
         if menu["data"]["storeMenu"]:
             for menuElement in menu["data"]["storeMenu"]:
                 if menuElement["id"] == "3ef90f5a-12af-48e9-a32c-d65450346382":
                     if menuElement["isAvailable"] == True:
                         validStoreList.append(element)
                         print("Found")
-
-        # await asyncio.sleep(0.02)
 
     return validStoreList
 
