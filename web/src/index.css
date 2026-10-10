@@ -27,3 +27,25 @@ body {
 	overflow: hidden;
 	border-radius: 8px;
 }
+
+.store-list-scroll {
+	scrollbar-width: thin;
+	scrollbar-color: #94a3b8 transparent;
+}
+
+.store-list-scroll::-webkit-scrollbar {
+	width: 6px;
+}
+
+.store-list-scroll::-webkit-scrollbar-track {
+	background: transparent;
+}
+
+.store-list-scroll::-webkit-scrollbar-thumb {
+	border-radius: 999px;
+	background: #94a3b8;
+}
+
+.store-list-scroll::-webkit-scrollbar-thumb:hover {
+	background: #64748b;
+}

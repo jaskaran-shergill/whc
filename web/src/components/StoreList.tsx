@@ -102,7 +102,7 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 	return (
 		<section
 			aria-label="Search places and browse nearby stores"
-			className="absolute left-1/2 z-10 w-[calc(100%-1.5rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-lg border border-slate-200 bg-white shadow-lg"
+			className="absolute left-1/2 z-10 w-[calc(100%-1.5rem)] max-w-lg -translate-x-1/2 overflow-hidden rounded-2xl border border-slate-200 bg-white shadow-lg"
 			style={{ bottom: "max(0.75rem, env(safe-area-inset-bottom))" }}
 		>
 			<div className="flex items-center gap-2 p-2">
@@ -142,7 +142,7 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 				<div className="border-t border-slate-200">
 					{isSearching && <p className="px-4 py-3 text-sm text-slate-500">Searching places…</p>}
 					{suggestions.length > 0 && (
-						<ul className="max-h-52 overflow-y-auto overscroll-contain py-1" role="listbox">
+						<ul className="store-list-scroll max-h-52 overflow-y-auto overscroll-contain py-1" role="listbox">
 							{suggestions.map((place) => (
 								<li key={`${place.latitude},${place.longitude}`}>
 									<button type="button" role="option" aria-selected="false" onClick={() => selectPlace(place)} className="min-h-11 w-full px-4 py-2 text-left text-sm text-slate-800 hover:bg-slate-50">
@@ -159,7 +159,7 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 			)}
 
 			{!isCollapsed && (
-				<ul className="max-h-[30dvh] divide-y divide-slate-100 overflow-y-auto overscroll-contain">
+				<ul className="store-list-scroll max-h-[30dvh] divide-y divide-slate-100 overflow-y-auto overscroll-contain">
 					{sortedStores.map((store) => {
 						const distance = userLocation ? getDistanceInKm(userLocation, store) : null;
 						const isSelected = store.id === selectedStoreId;
