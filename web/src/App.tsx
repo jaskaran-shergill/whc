@@ -13,53 +13,77 @@ function getRestaurantImageUrl(assetId?: string): string | undefined {
 	return `https://cdn.sanity.io/images/czqk28jt/prod_th_ca/${filename}.${extension}?w=750&q=40&fit=max&auto=format`;
 }
 
+const CN_TOWER = { latitude: 43.6426, longitude: -79.3871 };
+
 function App() {
 	const mapRef = useRef<MapRef>(null);
+	const storeRequestId = useRef(0);
 
 	const [userLocation, setUserLocation] = useState<Coordinates | null>(null);
 	const [locations, setLocations] = useState<LocationData[]>([]);
 	const [selectedLocation, setSelectedLocation] = useState<LocationData | null>(null);
+	const [isLocating, setIsLocating] = useState(true);
+	const [isLoadingStores, setIsLoadingStores] = useState(false);
+	const [storeLoadError, setStoreLoadError] = useState<string | null>(null);
 
 	async function fetchLocation(userLat: number, userLng: number) {
-		const response = await fetch("https://whc-api.shergill.dev", {
-			method: "POST",
-			headers: {
-				"Content-Type": "application/json",
-			},
-			body: JSON.stringify({
-				userLat,
-				userLng,
-			}),
-		});
+		const requestId = ++storeRequestId.current;
+		setIsLoadingStores(true);
+		setStoreLoadError(null);
+		try {
+			const response = await fetch("https://whc-api.shergill.dev", {
+				method: "POST",
+				headers: {
+					"Content-Type": "application/json",
+				},
+				body: JSON.stringify({ userLat, userLng }),
+			});
+			if (!response.ok) throw new Error("Store search failed");
 
-		const data = await response.json();
-
-		console.log(data);
-		const locationList: LocationData[] = data.map((e: any) => ({
-			id: e.storeId,
-			name: e.name,
-			lat: e.latitude,
-			lng: e.longitude,
-			color: "#f54269",
-			imageUrl: getRestaurantImageUrl(e.restaurantImage?.asset?._id),
-			status: e.status,
-			timezone: e.timezone,
-			diningRoomHours: e.diningRoomHours,
-		}));
-		setLocations(locationList);
+			const data = await response.json();
+			if (!Array.isArray(data)) throw new Error("Store search returned invalid data");
+			const locationList: LocationData[] = data.map((e: any) => ({
+				id: e.storeId,
+				name: e.name,
+				lat: e.latitude,
+				lng: e.longitude,
+				color: "#f54269",
+				imageUrl: getRestaurantImageUrl(e.restaurantImage?.asset?._id),
+				status: e.status,
+				timezone: e.timezone,
+				diningRoomHours: e.diningRoomHours,
+			}));
+			if (requestId === storeRequestId.current) setLocations(locationList);
+		} catch {
+			if (requestId === storeRequestId.current) setStoreLoadError("Could not load nearby stores.");
+		} finally {
+			if (requestId === storeRequestId.current) setIsLoadingStores(false);
+		}
 	}
 
 	useEffect(() => {
-		navigator.geolocation.getCurrentPosition(({ coords }) => {
-			mapRef.current?.getMap().jumpTo({
-				center: [coords.longitude, coords.latitude],
-				zoom: 15,
-			});
+		let active = true;
+		const useLocation = (latitude: number, longitude: number, zoom: number) => {
+			if (!active) return;
+			mapRef.current?.getMap().jumpTo({ center: [longitude, latitude], zoom });
+			setUserLocation({ latitude, longitude });
+			setIsLocating(false);
+			void fetchLocation(latitude, longitude);
+		};
 
-			setUserLocation({ latitude: coords.latitude, longitude: coords.longitude });
+		if (!navigator.geolocation) {
+			useLocation(CN_TOWER.latitude, CN_TOWER.longitude, 14);
+		} else {
+			navigator.geolocation.getCurrentPosition(
+				({ coords }) => useLocation(coords.latitude, coords.longitude, 15),
+				() => useLocation(CN_TOWER.latitude, CN_TOWER.longitude, 14),
+				{ enableHighAccuracy: false, maximumAge: 300000, timeout: 8000 },
+			);
+		}
 
-			fetchLocation(coords.latitude, coords.longitude);
-		});
+		return () => {
+			active = false;
+		};
 	}, []);
 	return (
 		<main className="map-screen">
@@ -87,11 +111,26 @@ function App() {
 				stores={locations}
 				userLocation={userLocation}
 				selectedStoreId={selectedLocation?.id ?? null}
+				isLoadingStores={isLoadingStores}
+				storeLoadError={storeLoadError}
 				onSelect={(location) => {
 					setSelectedLocation(location);
 					mapRef.current?.flyTo({ center: [location.lng, location.lat], zoom: 15, duration: 600 });
 				}}
+				onSearchPlace={(place) => {
+					setSelectedLocation(null);
+					setUserLocation({ latitude: place.latitude, longitude: place.longitude });
+					mapRef.current?.flyTo({ center: [place.longitude, place.latitude], zoom: 13, duration: 600 });
+					void fetchLocation(place.latitude, place.longitude);
+				}}
 			/>
+			{isLocating && (
+				<div role="status" className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-white text-slate-900">
+					<span className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-blue-600" />
+					<span className="text-sm font-medium">Getting your location…</span>
+					<span className="text-xs text-slate-500">If unavailable, we’ll use the CN Tower.</span>
+				</div>
+			)}
 		</main>
 	);
 }
