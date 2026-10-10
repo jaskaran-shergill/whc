@@ -1,4 +1,4 @@
-import { useEffect, useRef, useState } from "react";
+import { useEffect, useState } from "react";
 import { AltArrowDownIcon } from "@solar-icons/react/linear/alt-arrow-down";
 import { AltArrowUpIcon } from "@solar-icons/react/linear/alt-arrow-up";
 import type { LocationData } from "./MarkerPopup";
@@ -44,13 +44,8 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 	const [query, setQuery] = useState("");
 	const [suggestions, setSuggestions] = useState<PlaceSuggestion[]>([]);
 	const [isSearching, setIsSearching] = useState(false);
-	const skipNextSearch = useRef(false);
 
 	useEffect(() => {
-		if (skipNextSearch.current) {
-			skipNextSearch.current = false;
-			return;
-		}
 		const searchTerm = query.trim();
 		if (searchTerm.length < 3) {
 			setSuggestions([]);
@@ -94,8 +89,7 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 		: stores;
 
 	function selectPlace(place: PlaceSuggestion) {
-		skipNextSearch.current = true;
-		setQuery(place.label);
+		setQuery("");
 		setSuggestions([]);
 		setIsCollapsed(false);
 		onSearchPlace(place);
@@ -110,7 +104,12 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 			<div className="flex items-center gap-2 p-2">
 				<input
 					value={query}
-					onChange={(event) => setQuery(event.target.value)}
+					onChange={(event) => {
+						const value = event.target.value;
+						setQuery(value);
+						setSuggestions([]);
+						setIsSearching(value.trim().length >= 3);
+					}}
 					role="combobox"
 					aria-label="Search for a location"
 					aria-autocomplete="list"
@@ -122,7 +121,11 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 							event.preventDefault();
 							selectPlace(suggestions[0]);
 						}
-						if (event.key === "Escape") setSuggestions([]);
+						if (event.key === "Escape") {
+							setQuery("");
+							setSuggestions([]);
+							setIsSearching(false);
+						}
 					}}
 				/>
 				<button
@@ -141,27 +144,28 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 				</p>
 			)}
 
-			{(suggestions.length > 0 || isSearching) && (
+			{!isCollapsed && query.trim() && (
 				<div className="border-t border-slate-200">
-					{isSearching && <p className="px-4 py-3 text-sm text-slate-500">Searching places…</p>}
-					{suggestions.length > 0 && (
-						<ul className="store-list-scroll max-h-52 overflow-y-auto overscroll-contain py-1" role="listbox">
+					{suggestions.length > 0 ? (
+						<ul className="store-list-scroll max-h-[30dvh] divide-y divide-slate-100 overflow-y-auto overscroll-contain" role="listbox">
 							{suggestions.map((place) => (
 								<li key={`${place.latitude},${place.longitude}`}>
-									<button type="button" role="option" aria-selected="false" onClick={() => selectPlace(place)} className="min-h-11 w-full px-4 py-2 text-left text-sm text-slate-800 hover:bg-slate-50">
+									<button type="button" role="option" aria-selected="false" onClick={() => selectPlace(place)} className="min-h-12 w-full px-4 py-2 text-left text-sm text-slate-800 hover:bg-slate-50">
 										{place.label}
 									</button>
 								</li>
 							))}
 						</ul>
+					) : (
+						<p role="status" className="px-4 py-3 text-sm text-slate-500">
+							{query.trim().length < 3 ? "Type at least 3 characters to search." : isSearching ? "Searching places…" : "No places found."}
+						</p>
 					)}
-					<p className="border-t border-slate-100 px-4 py-1.5 text-xs text-slate-500">
-						Search data © <a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a>
-					</p>
+					{suggestions.length > 0 && <p className="border-t border-slate-100 px-4 py-1.5 text-xs text-slate-500">Search data © <a className="underline" href="https://www.openstreetmap.org/copyright" target="_blank" rel="noreferrer">OpenStreetMap</a></p>}
 				</div>
 			)}
 
-			{!isCollapsed && (
+			{!isCollapsed && !query.trim() && (
 				<ul className="store-list-scroll max-h-[30dvh] divide-y divide-slate-100 overflow-y-auto overscroll-contain">
 					{sortedStores.map((store) => {
 						const distance = userLocation ? getDistanceInKm(userLocation, store) : null;
