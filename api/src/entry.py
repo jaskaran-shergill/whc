@@ -25,5 +25,6 @@ class Default(WorkerEntrypoint):
             headers={
                 **CORS,
                 "Content-Type": "application/json",
+                "Cache-Control": "public, max-age=3600",
             },
         )
