@@ -75,8 +75,8 @@ function App() {
 			useLocation(CN_TOWER.latitude, CN_TOWER.longitude, 14);
 		} else {
 			navigator.geolocation.getCurrentPosition(
-				({ coords }) => useLocation(coords.latitude, coords.longitude, 15),
-				() => useLocation(CN_TOWER.latitude, CN_TOWER.longitude, 14),
+				({ coords }) => useLocation(coords.latitude, coords.longitude, 13.5),
+				() => useLocation(CN_TOWER.latitude, CN_TOWER.longitude, 13.5),
 				{ enableHighAccuracy: false, maximumAge: 300000, timeout: 8000 },
 			);
 		}
@@ -100,43 +100,43 @@ function App() {
 				</a>
 			</header>
 			<div className="map-frame">
-			<Map initialViewState={{ longitude: -79.3871, latitude: 43.6426, zoom: 14 }} ref={mapRef} style={{ width: "100%", height: "100%" }} mapStyle={mapStyleUrl}>
-				<NavigationControl position="top-right" />
+				<Map initialViewState={{ longitude: -79.3871, latitude: 43.6426, zoom: 13.5 }} ref={mapRef} style={{ width: "100%", height: "100%" }} mapStyle={mapStyleUrl}>
+					<NavigationControl position="top-right" />
 
-				{userLocation && <Marker longitude={userLocation.longitude} latitude={userLocation.latitude} color="#4263f5" />}
+					{userLocation && <Marker longitude={userLocation.longitude} latitude={userLocation.latitude} color="#4263f5" />}
 
-				{locations.map((loc) => (
-					<Marker
-						key={loc.id}
-						longitude={loc.lng}
-						latitude={loc.lat}
-						color={loc.color || "#ff4757"}
-						onClick={(event) => {
-							event.originalEvent.stopPropagation();
-							setSelectedLocation(loc);
-						}}
-					/>
-				))}
+					{locations.map((loc) => (
+						<Marker
+							key={loc.id}
+							longitude={loc.lng}
+							latitude={loc.lat}
+							color={loc.color || "#ff4757"}
+							onClick={(event) => {
+								event.originalEvent.stopPropagation();
+								setSelectedLocation(loc);
+							}}
+						/>
+					))}
 
-				{selectedLocation && <MarkerPopup location={selectedLocation} onClose={() => setSelectedLocation(null)} />}
-			</Map>
-			<StoreList
-				stores={locations}
-				userLocation={userLocation}
-				selectedStoreId={selectedLocation?.id ?? null}
-				isLoadingStores={isLoadingStores}
-				storeLoadError={storeLoadError}
-				onSelect={(location) => {
-					setSelectedLocation(location);
-					mapRef.current?.flyTo({ center: [location.lng, location.lat], zoom: 15, duration: 600 });
-				}}
-				onSearchPlace={(place) => {
-					setSelectedLocation(null);
-					setUserLocation({ latitude: place.latitude, longitude: place.longitude });
-					mapRef.current?.flyTo({ center: [place.longitude, place.latitude], zoom: 13, duration: 600 });
-					void fetchLocation(place.latitude, place.longitude);
-				}}
-			/>
+					{selectedLocation && <MarkerPopup location={selectedLocation} onClose={() => setSelectedLocation(null)} />}
+				</Map>
+				<StoreList
+					stores={locations}
+					userLocation={userLocation}
+					selectedStoreId={selectedLocation?.id ?? null}
+					isLoadingStores={isLoadingStores}
+					storeLoadError={storeLoadError}
+					onSelect={(location) => {
+						setSelectedLocation(location);
+						mapRef.current?.flyTo({ center: [location.lng, location.lat], zoom: 15, duration: 600 });
+					}}
+					onSearchPlace={(place) => {
+						setSelectedLocation(null);
+						setUserLocation({ latitude: place.latitude, longitude: place.longitude });
+						mapRef.current?.flyTo({ center: [place.longitude, place.latitude], zoom: 13, duration: 600 });
+						void fetchLocation(place.latitude, place.longitude);
+					}}
+				/>
 			</div>
 			{isLocating && (
 				<div role="status" className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-white text-slate-900">
