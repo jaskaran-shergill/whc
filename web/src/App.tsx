@@ -139,7 +139,6 @@ function App() {
 				<div role="status" className="absolute inset-0 z-50 flex flex-col items-center justify-center gap-3 bg-white text-slate-900">
 					<span className="h-8 w-8 animate-spin rounded-full border-2 border-slate-200 border-t-blue-600" />
 					<span className="text-sm font-medium">Getting your location…</span>
-					<span className="text-xs text-slate-500">If unavailable, we’ll use the CN Tower.</span>
 				</div>
 			)}
 		</main>
