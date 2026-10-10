@@ -1,4 +1,6 @@
 import { useEffect, useRef, useState } from "react";
+import { AltArrowDownIcon } from "@solar-icons/react/linear/alt-arrow-down";
+import { AltArrowUpIcon } from "@solar-icons/react/linear/alt-arrow-up";
 import type { LocationData } from "./MarkerPopup";
 
 export interface Coordinates {
@@ -114,7 +116,7 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 					aria-autocomplete="list"
 					aria-expanded={suggestions.length > 0}
 					placeholder="Search a city or address"
-					className="h-11 min-w-0 flex-1 rounded-md border border-slate-300 px-3 text-base text-slate-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
+					className="h-11 min-w-0 flex-1 rounded-xl border border-slate-300 px-3 text-base text-slate-900 outline-none focus:border-blue-600 focus:ring-1 focus:ring-blue-600"
 					onKeyDown={(event) => {
 						if (event.key === "Enter" && suggestions[0]) {
 							event.preventDefault();
@@ -125,11 +127,12 @@ export default function StoreList({ stores, userLocation, selectedStoreId, isLoa
 				/>
 				<button
 					type="button"
+					aria-label={isCollapsed ? "Show nearby stores" : "Hide nearby stores"}
 					aria-expanded={!isCollapsed}
 					onClick={() => setIsCollapsed((collapsed) => !collapsed)}
-					className="min-h-11 shrink-0 rounded-md px-2 text-sm text-blue-700"
+					className="grid h-11 w-11 shrink-0 place-items-center rounded-full text-blue-700 transition-colors hover:bg-blue-50 focus-visible:outline-2 focus-visible:outline-offset-2 focus-visible:outline-blue-600"
 				>
-					{isCollapsed ? "Show" : "Hide"}
+					{isCollapsed ? <AltArrowUpIcon size={20} aria-hidden="true" /> : <AltArrowDownIcon size={20} aria-hidden="true" />}
 				</button>
 			</div>
 			{(isLoadingStores || storeLoadError) && (
